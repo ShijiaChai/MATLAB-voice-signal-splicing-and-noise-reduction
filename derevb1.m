@@ -1,0 +1,42 @@
+function [final,a]=derevb1(signal,n)
+y=xcorr(signal,signal);
+L=length(signal);
+peaks=findpeaks(y);
+[maxt,index]=max(peaks);
+peaks(index)=0;
+max2=max(peaks);
+index2=find(y==max2);
+index1=find(y==max(y));
+delay=abs(index1-index2);
+delay=mean(delay);
+if(delay<200)
+    final=signal;
+    a=0;
+else
+    dx2=zeros(n*delay+1,1);
+    x1=0.1;x2=0.9;
+    m1=1;m2=-1;
+    e=abs(x2-x1);
+    while(e>0.00001)
+        x=(x1+x2)/2;
+        e=abs(x2-x1);
+        for i=[n:-1:0]
+            dx2(i*delay+1)=(-x)^(n-i);
+        end
+        y3=xcorr(dx2,signal);
+        y3=y3(end:-1:end-L+1);
+        temp=xcorr(y3,y3);
+        [M,vv]=max(temp);
+        m=temp(vv-delay);
+        if(m*m1<0)
+            x2=x;
+            m2=m;
+        else
+            x1=x;
+            m1=m;
+        end
+    end 
+    final=y3;
+    a=x;
+end
+end
