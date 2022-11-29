@@ -1,0 +1,16 @@
+[y1,Fs1]=audioread('P1aSeg-1.wav');
+[y2,Fs2]=audioread('P1aSeg-2.wav');
+[y3,Fs3]=audioread('P1aSeg-3.wav');
+a1=xcorr(y1,y2);
+a2=xcorr(y1,y3);
+a3=xcorr(y2,y3);
+[m1,I1]=max(a1);
+[m2,I2]=max(a2);
+[m3,I3]=max(a3);
+L1=length(y1);
+L2=length(y2);
+L3=length(y3);
+new(1:I1-L1)=y1(1:I1-L1);
+new(I1-L1+1:I1-L1+I3-L2)=y2(1:I3-L2);
+new(I1-L1+I3-L2+1:I1-L1+I3-L2+L3)=y3;
+audiowrite('P1a.wav',new,Fs1);
